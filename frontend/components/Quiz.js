@@ -1,34 +1,48 @@
-import React from 'react'
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectAnswer, postAnswer } from '../state/action-creators';
 
-export default function Quiz(props) {
+export default function Quiz() {
+  const quiz = useSelector(state => state.quiz);
+  const selectedAnswer = useSelector(state => state.selectedAnswer);
+  const dispatch = useDispatch();
+
+  const handleSelectAnswer = (answerId) => {
+    dispatch(selectAnswer(answerId));
+  };
+
+  const handleSubmitAnswer = () => {
+    if (selectedAnswer) {
+      dispatch(postAnswer(quiz.id, selectedAnswer));
+    }
+  };
+
   return (
     <div id="wrapper">
-      {
-        // quiz already in state? Let's use that, otherwise render "Loading next quiz..."
-        true ? (
-          <>
-            <h2>What is a closure?</h2>
+      {quiz ? (
+        <>
+          <h2>{quiz.question_text}</h2>
 
-            <div id="quizAnswers">
-              <div className="answer selected">
-                A function
-                <button>
-                  SELECTED
-                </button>
+          <div id="quizAnswers">
+            {quiz.answers.map(answer => (
+              <div
+                key={answer.id}
+                className={`answer ${selectedAnswer === answer.id ? 'selected' : ''}`}
+                onClick={() => handleSelectAnswer(answer.id)}
+              >
+                {answer.text}
+                <button>{selectedAnswer === answer.id ? 'SELECTED' : 'Select'}</button>
               </div>
+            ))}
+          </div>
 
-              <div className="answer">
-                An elephant
-                <button>
-                  Select
-                </button>
-              </div>
-            </div>
-
-            <button id="submitAnswerBtn">Submit answer</button>
-          </>
-        ) : 'Loading next quiz...'
-      }
+          <button id="submitAnswerBtn" disabled={!selectedAnswer} onClick={handleSubmitAnswer}>
+            Submit answer
+          </button>
+        </>
+      ) : (
+        'Loading next quiz...'
+      )}
     </div>
-  )
+  );
 }
