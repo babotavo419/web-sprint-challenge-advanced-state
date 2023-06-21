@@ -1,4 +1,13 @@
 import { combineReducers } from 'redux';
+import {
+  MOVE_CLOCKWISE,
+  MOVE_COUNTERCLOCKWISE,
+  SET_QUIZ_INTO_STATE,
+  SET_SELECTED_ANSWER,
+  SET_INFO_MESSAGE,
+  INPUT_CHANGE,
+  RESET_FORM,
+ } from '../state/action-types';
 
 // Initial state values
 const initialWheelState = 0;
@@ -14,8 +23,10 @@ const initialFormState = {
 // Reducer for wheel state
 function wheel(state = initialWheelState, action) {
   switch (action.type) {
-    case 'UPDATE_WHEEL_POSITION':
-      return action.position;
+    case MOVE_CLOCKWISE:
+      return (state + 1) % 6;
+    case MOVE_COUNTERCLOCKWISE:
+      return (state - 1 + 6) % 6;
     default:
       return state;
   }
@@ -24,7 +35,7 @@ function wheel(state = initialWheelState, action) {
 // Reducer for quiz state
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
-    case 'UPDATE_QUIZ':
+    case SET_QUIZ_INTO_STATE:
       return action.quiz;
     default:
       return state;
@@ -34,10 +45,8 @@ function quiz(state = initialQuizState, action) {
 // Reducer for selected answer state
 function selectedAnswer(state = initialSelectedAnswerState, action) {
   switch (action.type) {
-    case 'SELECT_ANSWER':
+    case SET_SELECTED_ANSWER:
       return action.answerId;
-    case 'UNSELECT_ANSWER':
-      return null;
     default:
       return state;
   }
@@ -46,8 +55,8 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
 // Reducer for info message state
 function infoMessage(state = initialMessageState, action) {
   switch (action.type) {
-    case 'DISPLAY_LOADING_MESSAGE':
-      return 'Loading next quiz';
+    case SET_INFO_MESSAGE:
+      return action.message;
     default:
       return state;
   }
@@ -56,21 +65,13 @@ function infoMessage(state = initialMessageState, action) {
 // Reducer for form state
 function form(state = initialFormState, action) {
   switch (action.type) {
-    case 'UPDATE_NEW_QUESTION':
+    case INPUT_CHANGE:
       return {
         ...state,
-        newQuestion: action.question,
+        [action.field]: action.value,
       };
-    case 'UPDATE_NEW_TRUE_ANSWER':
-      return {
-        ...state,
-        newTrueAnswer: action.trueAnswer,
-      };
-    case 'UPDATE_NEW_FALSE_ANSWER':
-      return {
-        ...state,
-        newFalseAnswer: action.falseAnswer,
-      };
+    case RESET_FORM:
+      return initialFormState;
     default:
       return state;
   }
@@ -86,4 +87,5 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
+
 

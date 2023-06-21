@@ -2,7 +2,7 @@
 
 // Action types
 export const MOVE_CLOCKWISE = 'MOVE_CLOCKWISE';
-export const MOVE_COUNTER_CLOCKWISE = 'MOVE_COUNTER_CLOCKWISE';
+export const MOVE_COUNTER_CLOCKWISE = 'MOVE_COUNTERCLOCKWISE';
 export const SELECT_ANSWER = 'SELECT_ANSWER';
 export const SET_MESSAGE = 'SET_MESSAGE';
 export const SET_QUIZ = 'SET_QUIZ';
