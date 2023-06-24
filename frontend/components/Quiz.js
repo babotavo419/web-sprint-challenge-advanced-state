@@ -35,12 +35,8 @@ export default function Quiz() {
   const handleSubmitAnswer = () => {
     if (selectedAnswer) {
       dispatch(postAnswer(quiz.quiz_id, selectedAnswer));
-  
-      // Delay fetching the next quiz slightly to ensure the submission is complete
-      setTimeout(loadNextQuiz, 500);
     }
-  };
-  
+  };  
 
   return (
     <div id="wrapper">

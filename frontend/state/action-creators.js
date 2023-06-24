@@ -116,7 +116,10 @@ export function postAnswer(quizId, answerId) {
     .then(data => {
       // Handling the response based on the message
       dispatch(setMessage(data.message));
-      dispatch(fetchQuiz()); // Fetch the next quiz
+
+      // Fetch the next quiz
+      // This ensures that the next quiz is only fetched after the answer has been successfully posted
+      dispatch(fetchQuiz());
     })
     .catch(error => {
       console.log('Error posting answer:', error);
