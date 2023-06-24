@@ -1,15 +1,11 @@
-// ❗ You don't need to add extra action creators to achieve MVP
-
-// Action types
 export const MOVE_CLOCKWISE = 'MOVE_CLOCKWISE';
-export const MOVE_COUNTER_CLOCKWISE = 'MOVE_COUNTERCLOCKWISE';
-export const SELECT_ANSWER = 'SELECT_ANSWER';
-export const SET_MESSAGE = 'SET_MESSAGE';
-export const SET_QUIZ = 'SET_QUIZ';
+export const MOVE_COUNTERCLOCKWISE = 'MOVE_COUNTERCLOCKWISE';
+export const SET_SELECTED_ANSWER = 'SET_SELECTED_ANSWER';
+export const SET_INFO_MESSAGE = 'SET_MESSAGE';
+export const SET_QUIZ_INTO_STATE = 'SET_QUIZ_INTO_STATE';
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 export const RESET_FORM = 'RESET_FORM';
 
-// Action creators
 export function moveClockwise() {
   return {
     type: MOVE_CLOCKWISE,
@@ -18,27 +14,27 @@ export function moveClockwise() {
 
 export function moveCounterClockwise() {
   return {
-    type: MOVE_COUNTER_CLOCKWISE,
+    type: MOVE_COUNTERCLOCKWISE,
   };
 }
 
 export function selectAnswer(answerId) {
   return {
-    type: SELECT_ANSWER,
+    type: SET_SELECTED_ANSWER,
     answerId,
   };
 }
 
 export function setMessage(message) {
   return {
-    type: SET_MESSAGE,
+    type: SET_INFO_MESSAGE,
     message,
   };
 }
 
 export function setQuiz(quiz) {
   return {
-    type: SET_QUIZ,
+    type: SET_QUIZ_INTO_STATE,
     quiz,
   };
 }
@@ -57,49 +53,85 @@ export function resetForm() {
   };
 }
 
-// ❗ Async action creators
 export function fetchQuiz() {
-  return function (dispatch) {
-    // First, dispatch an action to reset the quiz state (so the "Loading next quiz..." message can display)
-    dispatch(setQuiz(null));
+  return function(dispatch) {
+    dispatch(setQuiz(null)); // Reset quiz state
 
-    // Simulate an asynchronous request to fetch the next quiz
-    setTimeout(() => {
-      // On successful GET:
-      // - Dispatch an action to send the obtained quiz to its state
-      const nextQuiz = { /* The obtained quiz object */ };
-      dispatch(setQuiz(nextQuiz));
-    }, 2000); // Simulating a slow response
+    fetch('http://localhost:9000/api/quiz/next')
+      .then(response => response.json())
+      .then(data => {
+        const quiz = {
+          quiz_id: data.quiz_id,
+          question_text: data.question_text,
+          answers: data.answers.map(answer => ({
+            answer_id: answer.answer_id,
+            text: answer.text,
+          }))
+        }
+        dispatch(setQuiz(data)); // Set fetched quiz into state
+      })
+      .catch(error => {
+        console.log('Error fetching quiz:', error);
+        // Dispatch an action to handle error cases if needed
+      });
   };
 }
 
 export function postAnswer(quizId, answerId) {
-  return function (dispatch) {
-    // Simulate an asynchronous request to post the answer
-    setTimeout(() => {
-      // On successful POST:
-      // - Dispatch an action to reset the selected answer state
-      // - Dispatch an action to set the server message to state
-      // - Dispatch the fetching of the next quiz
-      dispatch(selectAnswer(null));
-      dispatch(setMessage('Answer submitted successfully.'));
-      dispatch(fetchQuiz());
-    }, 1000);
+  return function(dispatch) {
+    const payload = {
+      quiz_id: quizId,
+      answer_id: answerId,
+    };
+
+    fetch('http://localhost:9000/api/quiz/answer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(response => response.json())
+      .then(_data => {
+        // Handle response and dispatch appropriate actions
+        // For example:
+        dispatch(setMessage('Answer submitted successfully.'));
+        dispatch(fetchQuiz());
+      })
+      .catch(error => {
+        console.log('Error posting answer:', error);
+        // Dispatch an action to handle error cases if needed
+      });
   };
 }
 
-export function postQuiz(question, trueAnswer, falseAnswer) {
-  return function (dispatch) {
-    // Simulate an asynchronous request to post the new quiz
-    setTimeout(() => {
-      // On successful POST:
-      // - Dispatch the correct message to the appropriate state
-      // - Dispatch the resetting of the form
-      dispatch(setMessage('New quiz submitted successfully.'));
-      dispatch(resetForm());
-    }, 1000);
+export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
+  return function(dispatch) {
+    const payload = {
+      question_text: questionText,
+      true_answer_text: trueAnswerText,
+      false_answer_text: falseAnswerText,
+    };
+
+    fetch('http://localhost:9000/api/quiz/new', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(response => response.json())
+      .then(_data => {
+        // Handle response and dispatch appropriate actions
+        // For example:
+        dispatch(setMessage('New quiz submitted successfully.'));
+        dispatch(resetForm());
+      })
+      .catch(error => {
+        console.log('Error posting new quiz:', error);
+        // Dispatch an action to handle error cases if needed
+      });
   };
 }
 
-// ❗ On promise rejections, use log statements or breakpoints, and put an appropriate error message in state
 

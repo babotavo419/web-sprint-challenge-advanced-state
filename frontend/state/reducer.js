@@ -7,11 +7,16 @@ import {
   SET_INFO_MESSAGE,
   INPUT_CHANGE,
   RESET_FORM,
- } from '../state/action-types';
+} from '../state/action-types';
 
 // Initial state values
 const initialWheelState = 0;
-const initialQuizState = null;
+const initialQuizState = {
+  quiz_id: '',
+  question: '',
+  answers: [],
+};
+
 const initialSelectedAnswerState = null;
 const initialMessageState = '';
 const initialFormState = {
@@ -36,7 +41,12 @@ function wheel(state = initialWheelState, action) {
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
     case SET_QUIZ_INTO_STATE:
-      return action.quiz;
+      return {
+        ...state,
+        quiz_id: action.quiz.quiz_id,
+        question: action.quiz.question,
+        answers: action.quiz.answers,
+      };
     default:
       return state;
   }
@@ -49,7 +59,9 @@ function selectedAnswer(state = initialSelectedAnswerState, action) {
       return action.answerId;
     default:
       return state;
+ 
   }
+
 }
 
 // Reducer for info message state
@@ -87,5 +99,4 @@ const rootReducer = combineReducers({
 });
 
 export default rootReducer;
-
 
