@@ -1,10 +1,12 @@
 export const MOVE_CLOCKWISE = 'MOVE_CLOCKWISE';
 export const MOVE_COUNTERCLOCKWISE = 'MOVE_COUNTERCLOCKWISE';
 export const SET_SELECTED_ANSWER = 'SET_SELECTED_ANSWER';
-export const SET_INFO_MESSAGE = 'SET_MESSAGE';
+export const SET_INFO_MESSAGE = 'SET_INFO_MESSAGE';
 export const SET_QUIZ_INTO_STATE = 'SET_QUIZ_INTO_STATE';
 export const INPUT_CHANGE = 'INPUT_CHANGE';
 export const RESET_FORM = 'RESET_FORM';
+export const SET_CORRECT_ANSWER_MESSAGE = 'SET_CORRECT_ANSWER_MESSAGE';
+export const SET_INCORRECT_ANSWER_MESSAGE = 'SET_INCORRECT_ANSWER_MESSAGE';
 
 export function moveClockwise() {
   return {
@@ -32,6 +34,20 @@ export function setMessage(message) {
   };
 }
 
+export function setCorrectAnswerMessage() {
+  return {
+    type: SET_INFO_MESSAGE,
+    message: 'Nice job! That was the correct answer.',
+  };
+}
+
+export function setIncorrectAnswerMessage() {
+  return {
+    type: SET_INFO_MESSAGE,
+    message: 'What a shame! That was the incorrect answer.',
+  };
+}
+
 export function setQuiz(quiz) {
   return {
     type: SET_QUIZ_INTO_STATE,
@@ -55,11 +71,11 @@ export function resetForm() {
 
 export function fetchQuiz() {
   return function(dispatch) {
-    dispatch(setQuiz(null)); // Reset quiz state
 
     fetch('http://localhost:9000/api/quiz/next')
       .then(response => response.json())
       .then(data => {
+        console.log(data);
         const quiz = {
           quiz_id: data.quiz_id,
           question_text: data.question_text,
@@ -68,7 +84,7 @@ export function fetchQuiz() {
             text: answer.text,
           }))
         }
-        dispatch(setQuiz(data)); // Set fetched quiz into state
+        dispatch(setQuiz(quiz)); // Set fetched quiz into state
       })
       .catch(error => {
         console.log('Error fetching quiz:', error);
@@ -83,7 +99,7 @@ export function postAnswer(quizId, answerId) {
       quiz_id: quizId,
       answer_id: answerId,
     };
-
+    
     fetch('http://localhost:9000/api/quiz/answer', {
       method: 'POST',
       headers: {
@@ -91,19 +107,23 @@ export function postAnswer(quizId, answerId) {
       },
       body: JSON.stringify(payload),
     })
-      .then(response => response.json())
-      .then(_data => {
-        // Handle response and dispatch appropriate actions
-        // For example:
-        dispatch(setMessage('Answer submitted successfully.'));
-        dispatch(fetchQuiz());
-      })
-      .catch(error => {
-        console.log('Error posting answer:', error);
-        // Dispatch an action to handle error cases if needed
-      });
-  };
-}
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => {throw err;});
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Handling the response based on the message
+      dispatch(setMessage(data.message));
+      dispatch(fetchQuiz()); // Fetch the next quiz
+    })
+    .catch(error => {
+      console.log('Error posting answer:', error);
+      dispatch(setMessage('Error submitting answer.'));
+    });
+  }
+}    
 
 export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
   return function(dispatch) {
@@ -121,17 +141,20 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
       body: JSON.stringify(payload),
     })
       .then(response => response.json())
-      .then(_data => {
+      .then(data => {
         // Handle response and dispatch appropriate actions
-        // For example:
-        dispatch(setMessage('New quiz submitted successfully.'));
-        dispatch(resetForm());
+        if (data.success) {
+          const message = `Congrats: "${questionText}" is a great question!`;
+          dispatch(setMessage(message));
+          dispatch(resetForm());
+        } else {
+          dispatch(setMessage('Error submitting new quiz.'));
+        }
       })
       .catch(error => {
         console.log('Error posting new quiz:', error);
+        dispatch(setMessage('Error submitting new quiz.'));
         // Dispatch an action to handle error cases if needed
       });
   };
 }
-
-

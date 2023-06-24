@@ -5,6 +5,7 @@ import { setQuiz, selectAnswer, postAnswer } from '../state/action-creators';
 export default function Quiz() {
   const quiz = useSelector(state => state.quiz);
   const selectedAnswer = useSelector(state => state.selectedAnswer);
+  const message = useSelector(state => state.infoMessage);
   const dispatch = useDispatch();
 
   useEffect(() => {

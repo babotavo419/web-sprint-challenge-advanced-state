@@ -5,6 +5,8 @@ import {
   SET_QUIZ_INTO_STATE,
   SET_SELECTED_ANSWER,
   SET_INFO_MESSAGE,
+  SET_CORRECT_ANSWER_MESSAGE,
+  SET_INCORRECT_ANSWER_MESSAGE,
   INPUT_CHANGE,
   RESET_FORM,
 } from '../state/action-types';
@@ -69,6 +71,10 @@ function infoMessage(state = initialMessageState, action) {
   switch (action.type) {
     case SET_INFO_MESSAGE:
       return action.message;
+    case SET_CORRECT_ANSWER_MESSAGE:
+      return 'Nice job! That was the correct answer.';
+    case SET_INCORRECT_ANSWER_MESSAGE:
+      return 'What a shame! That was the incorrect answer.';
     default:
       return state;
   }
@@ -80,7 +86,7 @@ function form(state = initialFormState, action) {
     case INPUT_CHANGE:
       return {
         ...state,
-        [action.field]: action.value,
+        [action.fieldName]: action.value,
       };
     case RESET_FORM:
       return initialFormState;
