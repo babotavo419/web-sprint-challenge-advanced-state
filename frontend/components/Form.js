@@ -30,6 +30,12 @@ export function Form() {
     setErrorMessage('');
   };
 
+  const isFormValid = (
+    form.newQuestion.trim().length > 1 &&
+    form.newTrueAnswer.trim().length > 1 &&
+    form.newFalseAnswer.trim().length > 1
+  );
+
   return (
     <form id="form" onSubmit={handleSubmit}>
       <h2>Create New Quiz</h2>
@@ -54,7 +60,7 @@ export function Form() {
         placeholder="Enter false answer"
         value={form.newFalseAnswer}
       />
-      <button id="submitNewQuizBtn">Submit new quiz</button>
+      <button id="submitNewQuizBtn" disabled={!isFormValid}>Submit new quiz</button>
       {errorMessage && <p>{errorMessage}</p>}
     </form>
   );

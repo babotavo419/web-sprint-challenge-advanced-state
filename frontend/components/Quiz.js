@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setQuiz, selectAnswer, postAnswer } from '../state/action-creators';
 
 export default function Quiz() {
   const quiz = useSelector(state => state.quiz);
   const selectedAnswer = useSelector(state => state.selectedAnswer);
-  const message = useSelector(state => state.infoMessage);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Fetch quiz data from the API and transform it
+  const loadNextQuiz = () => {
+    setIsLoading(true);
     fetch('http://localhost:9000/api/quiz/next')
       .then(response => response.json())
       .then(data => {
@@ -21,14 +21,16 @@ export default function Quiz() {
             text: answer.text,
           })),
         };
-
-        dispatch(setQuiz(transformedQuiz)); // Set the transformed quiz into state
+        dispatch(setQuiz(transformedQuiz));
+        setIsLoading(false);
       })
       .catch(error => {
         console.log('Error fetching quiz:', error);
-        // Dispatch an action to handle error cases if needed
+        setIsLoading(false);
       });
-  }, []);
+  };
+
+  useEffect(loadNextQuiz, []);
 
   const handleSelectAnswer = (answerId) => {
     dispatch(selectAnswer(answerId));
@@ -37,17 +39,20 @@ export default function Quiz() {
   const handleSubmitAnswer = () => {
     if (selectedAnswer) {
       dispatch(postAnswer(quiz.quiz_id, selectedAnswer));
+      loadNextQuiz();
     }
   };
 
   return (
     <div id="wrapper">
-      {quiz ? (
+      {isLoading ? (
+        'Loading next quiz...'
+      ) : quiz ? (
         <>
           <h2>{quiz.question}</h2>
 
           <div id="quizAnswers">
-            {quiz.answers.map((answer, index) => (
+            {quiz.answers.map((answer) => (
               <div
                 key={answer.answer_id}
                 className={`answer ${selectedAnswer === answer.answer_id ? 'selected' : ''}`}
@@ -63,9 +68,7 @@ export default function Quiz() {
             Submit answer
           </button>
         </>
-      ) : (
-        'Loading next quiz...'
-      )}
+      ) : null}
     </div>
   );
 }
