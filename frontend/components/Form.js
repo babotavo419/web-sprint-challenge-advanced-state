@@ -1,69 +1,54 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { postQuiz, inputChange, resetForm } from '../state/action-creators';
 
-export function Form() {
-  const [errorMessage, setErrorMessage] = useState('');
-  const form = useSelector(state => state.form);
+function Form() {
   const dispatch = useDispatch();
+  
+  // Select form state and message from Redux store
+  const message = useSelector(state => state.infoMessage);
+  const formState = useSelector(state => state.form);
 
-  const handleChange = (event) => {
-    const { id, value } = event.target;
-    dispatch(inputChange(id, value));
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    dispatch(inputChange(name, value));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    // Check if all form inputs have non-empty values
-    const { newQuestion, newTrueAnswer, newFalseAnswer } = form;
-    if (!newQuestion.trim() || !newTrueAnswer.trim() || !newFalseAnswer.trim()) {
-      setErrorMessage('Please fill in all fields.');
-      return;
-    }
-
-    // Dispatch the postQuiz action to submit the new quiz
-    dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
-
-    // Reset the form after submission
-    dispatch(resetForm());
-    setErrorMessage('');
+    // Dispatch postQuiz action
+    dispatch(postQuiz(formState.questionText, formState.trueAnswerText, formState.falseAnswerText));
   };
 
-  const isFormValid = (
-    form.newQuestion.trim().length > 1 &&
-    form.newTrueAnswer.trim().length > 1 &&
-    form.newFalseAnswer.trim().length > 1
-  );
-
   return (
-    <form id="form" onSubmit={handleSubmit}>
-      <h2>Create New Quiz</h2>
+    <form onSubmit={handleSubmit}>
+      
       <input
-        maxLength={50}
-        onChange={handleChange}
-        id="newQuestion"
-        placeholder="Enter question"
-        value={form.newQuestion}
+        type="text"
+        name="questionText"
+        value={formState.questionText || ""}
+        onChange={handleInputChange}
+        placeholder="Question"
       />
       <input
-        maxLength={50}
-        onChange={handleChange}
-        id="newTrueAnswer"
-        placeholder="Enter true answer"
-        value={form.newTrueAnswer}
+        type="text"
+        name="trueAnswerText"
+        value={formState.trueAnswerText || ""}
+        onChange={handleInputChange}
+        placeholder="True Answer"
       />
       <input
-        maxLength={50}
-        onChange={handleChange}
-        id="newFalseAnswer"
-        placeholder="Enter false answer"
-        value={form.newFalseAnswer}
+        type="text"
+        name="falseAnswerText"
+        value={formState.falseAnswerText || ""}
+        onChange={handleInputChange}
+        placeholder="False Answer"
       />
-      <button id="submitNewQuizBtn" disabled={!isFormValid}>Submit new quiz</button>
-      {errorMessage && <p>{errorMessage}</p>}
+
+      <button type="submit">Submit</button>
     </form>
   );
 }
 
 export default Form;
+
