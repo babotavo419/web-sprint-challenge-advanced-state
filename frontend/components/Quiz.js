@@ -34,15 +34,12 @@ export default function Quiz() {
 
   const handleSubmitAnswer = () => {
     if (selectedAnswer) {
-      dispatch(postAnswer(quiz.quiz_id, selectedAnswer))
-        .then(() => {
-          loadNextQuiz();
-        })
-        .catch((error) => {
-          console.error('Error submitting answer:', error);
-        });
+      dispatch(postAnswer(quiz.quiz_id, selectedAnswer));
+      // Directly calling loadNextQuiz without waiting for the promise
+      loadNextQuiz();
     }
   };
+  
 
   return (
     <div id="wrapper">
