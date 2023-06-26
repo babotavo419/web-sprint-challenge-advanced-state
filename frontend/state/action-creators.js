@@ -143,18 +143,16 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
       },
       body: JSON.stringify(payload),
     })
-      .then(response => {
-        if (response.status === 201) { // Check for status code 201 (Created)
-          return response.json();
-        } else {
-          throw new Error('Error submitting new quiz.');
-        }
-      })
+      .then(response => response.json())
       .then(data => {
-        console.log('Received response:', data);
-        const message = `Congrats: "${questionText}" is a great question!`;
-        dispatch(setMessage(message));
-        dispatch(resetForm());
+        // Handle response and dispatch appropriate actions
+        if (data.quiz_id) { // Check for quiz_id instead of success
+          const message = `Congrats: "${questionText}" is a great question!`;
+          dispatch(setMessage(message));
+          dispatch(resetForm());
+        } else {
+          dispatch(setMessage('Error submitting new quiz.'));
+        }
       })
       .catch(error => {
         console.log('Error posting new quiz:', error);

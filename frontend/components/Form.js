@@ -1,54 +1,89 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { postQuiz, inputChange, resetForm } from '../state/action-creators';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { postQuiz, setMessage, resetForm } from '../state/action-creators';
 
-function Form() {
+export default function Form() {
   const dispatch = useDispatch();
-  
-  // Select form state and message from Redux store
-  const message = useSelector(state => state.infoMessage);
-  const formState = useSelector(state => state.form);
+
+  const [newQuestion, setNewQuestion] = useState('');
+  const [newTrueAnswer, setNewTrueAnswer] = useState('');
+  const [newFalseAnswer, setNewFalseAnswer] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    const checkIfInputsAreValid = () => {
+      return (
+        newQuestion && newQuestion.trim() &&
+        newTrueAnswer && newTrueAnswer.trim() &&
+        newFalseAnswer && newFalseAnswer.trim()
+      );
+    };
+
+    setIsButtonDisabled(!checkIfInputsAreValid());
+  }, [newQuestion, newTrueAnswer, newFalseAnswer]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    dispatch(inputChange(name, value));
+    switch (name) {
+      case 'newQuestion':
+        setNewQuestion(value);
+        break;
+      case 'newTrueAnswer':
+        setNewTrueAnswer(value);
+        break;
+      case 'newFalseAnswer':
+        setNewFalseAnswer(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Dispatch postQuiz action
-    dispatch(postQuiz(formState.questionText, formState.trueAnswerText, formState.falseAnswerText));
+    dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
   };
+  
 
   return (
     <form onSubmit={handleSubmit}>
+      <h2>Add a New Quiz</h2>
       
-      <input
-        type="text"
-        name="questionText"
-        value={formState.questionText || ""}
-        onChange={handleInputChange}
-        placeholder="Question"
-      />
-      <input
-        type="text"
-        name="trueAnswerText"
-        value={formState.trueAnswerText || ""}
-        onChange={handleInputChange}
-        placeholder="True Answer"
-      />
-      <input
-        type="text"
-        name="falseAnswerText"
-        value={formState.falseAnswerText || ""}
-        onChange={handleInputChange}
-        placeholder="False Answer"
-      />
-
-      <button type="submit">Submit</button>
+      <div>
+        <label htmlFor="newQuestion">Question: </label>
+        <input
+          type="text"
+          id="newQuestion"
+          name="newQuestion"
+          value={newQuestion}
+          onChange={handleInputChange}
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="newTrueAnswer">True Answer: </label>
+        <input
+          type="text"
+          id="newTrueAnswer"
+          name="newTrueAnswer"
+          value={newTrueAnswer}
+          onChange={handleInputChange}
+        />
+      </div>
+      
+      <div>
+        <label htmlFor="newFalseAnswer">False Answer: </label>
+        <input
+          type="text"
+          id="newFalseAnswer"
+          name="newFalseAnswer"
+          value={newFalseAnswer}
+          onChange={handleInputChange}
+        />
+      </div>
+      
+      <button type="submit" disabled={isButtonDisabled}>Submit</button>
     </form>
   );
 }
-
-export default Form;
 
