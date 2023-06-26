@@ -24,14 +24,15 @@ export default function Form() {
   useEffect(() => {
     const checkIfInputsAreValid = () => {
       return (
-        newQuestion.trim().length > 1 &&
-        newTrueAnswer.trim().length > 1 &&
-        newFalseAnswer.trim().length > 1
+        newQuestion.trim().length > 0 && // Check for more than 0 instead of more than 1
+        newTrueAnswer.trim().length > 0 &&
+        newFalseAnswer.trim().length > 0
       );
     };
-
+  
     setIsButtonDisabled(!checkIfInputsAreValid());
   }, [newQuestion, newTrueAnswer, newFalseAnswer]);
+
 
   useEffect(() => {
     const stateToSave = { newQuestion, newTrueAnswer, newFalseAnswer };
@@ -74,7 +75,8 @@ export default function Form() {
     <form onSubmit={handleSubmit}>
       <h2>Add a New Quiz</h2>
       
-      {infoMessage && <div>{infoMessage}</div>}
+      {/* Added an id to the info message container */}
+      {infoMessage && <div id="infoMessage">{infoMessage}</div>}
       
       <div>
         <label htmlFor="newQuestion">Question: </label>
@@ -109,8 +111,12 @@ export default function Form() {
         />
       </div>
       
-      <button type="submit" disabled={isButtonDisabled}>Submit</button>
+      {/* Added an id to the submit button */}
+      <button type="submit" disabled={isButtonDisabled} id="submitButton">
+        Submit
+      </button>
     </form>
-  );
+    );
+
 }
 
