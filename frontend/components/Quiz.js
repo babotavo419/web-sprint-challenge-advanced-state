@@ -34,9 +34,15 @@ export default function Quiz() {
 
   const handleSubmitAnswer = () => {
     if (selectedAnswer) {
-      dispatch(postAnswer(quiz.quiz_id, selectedAnswer));
+      dispatch(postAnswer(quiz.quiz_id, selectedAnswer))
+        .then(() => {
+          loadNextQuiz();
+        })
+        .catch((error) => {
+          console.error('Error submitting answer:', error);
+        });
     }
-  };  
+  };
 
   return (
     <div id="wrapper">
