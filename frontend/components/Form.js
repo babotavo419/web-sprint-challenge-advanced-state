@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postQuiz, infoMessage, resetForm } from '../state/action-creators';
+import { postQuiz } from '../state/action-creators';
 
 export default function Form() {
   const dispatch = useDispatch();
-  const infoMessage = useSelector(state => state.infoMessage);
   const formState = useSelector(state => state.form); // Listen for the form state in Redux
 
   const [newQuestion, setNewQuestion] = useState('');
