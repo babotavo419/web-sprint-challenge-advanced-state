@@ -26,6 +26,7 @@ const initialFormState = {
   newTrueAnswer: '',
   newFalseAnswer: '',
   infoMessage: '',
+  isValid: false,
 };
 
 // Reducer for wheel state
@@ -88,6 +89,7 @@ function form(state = initialFormState, action) {
       return {
         ...state,
         [action.fieldName]: action.value,
+        isValid: checkIfFormIsValid(action.fieldName, action.value), // Update the isValid field based on input changes
       };
     case RESET_FORM:
       return initialFormState;
@@ -95,6 +97,19 @@ function form(state = initialFormState, action) {
       return state;
   }
 }
+
+// Add a helper function to check if the form inputs are valid
+function checkIfFormIsValid(fieldName, value) {
+  switch (fieldName) {
+    case 'newQuestion':
+    case 'newTrueAnswer':
+    case 'newFalseAnswer':
+      return value.trim().length > 1; // Check if the input value has more than one character after trimming whitespace
+    default:
+      return true; // Assume other fields are valid
+  }
+}
+
 
 // Combine all reducers
 const rootReducer = combineReducers({

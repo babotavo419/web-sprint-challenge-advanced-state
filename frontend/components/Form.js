@@ -6,9 +6,7 @@ export default function Form() {
   const dispatch = useDispatch();
   const formState = useSelector(state => state.form);
 
-  const [newQuestion, setNewQuestion] = useState('');
-  const [newTrueAnswer, setNewTrueAnswer] = useState('');
-  const [newFalseAnswer, setNewFalseAnswer] = useState('');
+  const { newQuestion, newTrueAnswer, newFalseAnswer } = formState; // Access form fields from the Redux store
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,6 +28,32 @@ export default function Form() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
+  };
+
+  const isButtonDisabled = newQuestion.trim().length <= 1 || newTrueAnswer.trim().length <= 1 || newFalseAnswer.trim().length <= 1;
+
+  const setNewQuestion = (value) => {
+    dispatch({
+      type: 'INPUT_CHANGE',
+      fieldName: 'newQuestion',
+      value: value,
+    });
+  };
+
+  const setNewTrueAnswer = (value) => {
+    dispatch({
+      type: 'INPUT_CHANGE',
+      fieldName: 'newTrueAnswer',
+      value: value,
+    });
+  };
+
+  const setNewFalseAnswer = (value) => {
+    dispatch({
+      type: 'INPUT_CHANGE',
+      fieldName: 'newFalseAnswer',
+      value: value,
+    });
   };
 
   return (
@@ -71,7 +95,7 @@ export default function Form() {
 
       <button
         type="submit"
-        disabled={newQuestion.trim().length <= 1 || newTrueAnswer.trim().length <= 1 || newFalseAnswer.trim().length <= 1}
+        disabled={isButtonDisabled}
         id="submitButton"
         data-testid="submitButton"
       >
