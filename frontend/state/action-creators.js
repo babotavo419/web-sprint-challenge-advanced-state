@@ -69,6 +69,14 @@ export function resetForm() {
   };
 }
 
+
+export function addQuizToRoster(quiz) {
+  return {
+    type: ADD_QUIZ_TO_ROSTER,
+    quiz,
+  };
+}
+
 export function fetchQuiz() {
   return function(dispatch) {
 

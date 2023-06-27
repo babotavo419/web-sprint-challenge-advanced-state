@@ -9,6 +9,7 @@ import {
   SET_INCORRECT_ANSWER_MESSAGE,
   INPUT_CHANGE,
   RESET_FORM,
+  ADD_QUIZ_TO_ROSTER,
 } from '../state/action-types';
 
 // Initial state values
@@ -110,6 +111,16 @@ function checkIfFormIsValid(fieldName, value) {
   }
 }
 
+// Reducer for quiz roster state
+function quizRoster(state = [], action) {
+  switch (action.type) {
+    case ADD_QUIZ_TO_ROSTER:
+      return [...state, action.quiz]; // Add the new quiz to the roster
+    default:
+      return state;
+  }
+}
+
 
 // Combine all reducers
 const rootReducer = combineReducers({
@@ -118,6 +129,7 @@ const rootReducer = combineReducers({
   selectedAnswer,
   infoMessage,
   form,
+  quizRoster,
 });
 
 export default rootReducer;
