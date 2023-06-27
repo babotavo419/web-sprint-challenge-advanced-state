@@ -136,8 +136,7 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
       false_answer_text: falseAnswerText,
     };
 
-    // Return the fetch Promise so that you can chain `.then()` in the calling code
-    return fetch('http://localhost:9000/api/quiz/new', {
+    fetch('http://localhost:9000/api/quiz/new', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -147,19 +146,18 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
       .then(response => response.json())
       .then(data => {
         // Handle response and dispatch appropriate actions
-        if (data.quiz_id) { // Check for quiz_id instead of success
+        if (data.quiz_id) {
           const message = `Congrats: "${questionText}" is a great question!`;
           dispatch(setMessage(message));
-          dispatch(resetForm());
+          dispatch(resetForm()); // Dispatch resetForm action
         } else {
           dispatch(setMessage('Error submitting new quiz.'));
         }
-        return data; // Return data so it can be used in the chained `.then()`
       })
       .catch(error => {
         console.log('Error posting new quiz:', error);
         dispatch(setMessage('Error submitting new quiz.'));
-        throw error; // Re-throw error so it can be caught in the chained `.catch()`
       });
   };
 }
+

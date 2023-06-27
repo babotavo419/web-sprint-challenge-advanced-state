@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postQuiz, setMessage, resetForm } from '../state/action-creators';
+import { postQuiz, infoMessage, resetForm } from '../state/action-creators';
 
 export default function Form() {
   const dispatch = useDispatch();
   const infoMessage = useSelector(state => state.infoMessage);
+  const formState = useSelector(state => state.form); // Listen for the form state in Redux
 
   const [newQuestion, setNewQuestion] = useState('');
   const [newTrueAnswer, setNewTrueAnswer] = useState('');
   const [newFalseAnswer, setNewFalseAnswer] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
+  // Reset the form fields when the form state is reset in Redux
   useEffect(() => {
-    const savedState = localStorage.getItem('formData');
-    if (savedState) {
-      const parsedState = JSON.parse(savedState);
-      setNewQuestion(parsedState.newQuestion || '');
-      setNewTrueAnswer(parsedState.newTrueAnswer || '');
-      setNewFalseAnswer(parsedState.newFalseAnswer || '');
+    if (formState.newQuestion === '' && formState.newTrueAnswer === '' && formState.newFalseAnswer === '') {
+      setNewQuestion('');
+      setNewTrueAnswer('');
+      setNewFalseAnswer('');
     }
-  }, []);
+  }, [formState]);
 
   useEffect(() => {
     const checkIfInputsAreValid = () => {
