@@ -23,19 +23,13 @@ export default function Form() {
   useEffect(() => {
     const checkIfInputsAreValid = () => {
       return (
-        newQuestion.trim().length > 0 && // Check for more than 0 instead of more than 1
-        newTrueAnswer.trim().length > 0 &&
-        newFalseAnswer.trim().length > 0
+        newQuestion.trim().length > 1 &&
+        newTrueAnswer.trim().length > 1 &&
+        newFalseAnswer.trim().length > 1
       );
     };
   
     setIsButtonDisabled(!checkIfInputsAreValid());
-  }, [newQuestion, newTrueAnswer, newFalseAnswer]);
-
-
-  useEffect(() => {
-    const stateToSave = { newQuestion, newTrueAnswer, newFalseAnswer };
-    localStorage.setItem('formData', JSON.stringify(stateToSave));
   }, [newQuestion, newTrueAnswer, newFalseAnswer]);
 
   const handleInputChange = (event) => {
@@ -58,7 +52,7 @@ export default function Form() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
-  };  
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -96,16 +90,16 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-        <button 
-          type="submit" 
-          disabled={isButtonDisabled} 
-          id="submitButton"
-          data-testid="submitButton" // Adding a data-testid attribute
-            >
-            Submit
-        </button>
-        </form>
-    );
-
+      
+      <button
+        type="submit"
+        disabled={isButtonDisabled}
+        id="submitButton"
+        data-testid="submitButton"
+      >
+        Submit
+      </button>
+    </form>
+  );
 }
 

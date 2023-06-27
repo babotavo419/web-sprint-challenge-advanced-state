@@ -149,7 +149,7 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
         if (data.quiz_id) {
           const message = `Congrats: "${questionText}" is a great question!`;
           dispatch(setMessage(message));
-          dispatch(resetForm()); // Dispatch resetForm action
+          dispatch(resetForm()); // Dispatch resetForm action to reset the form
         } else {
           dispatch(setMessage('Error submitting new quiz.'));
         }
@@ -160,4 +160,5 @@ export function postQuiz(questionText, trueAnswerText, falseAnswerText) {
       });
   };
 }
+
 
