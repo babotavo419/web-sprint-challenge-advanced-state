@@ -58,27 +58,12 @@ export default function Form() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer))
-      .then(() => {
-        setNewQuestion('');
-        setNewTrueAnswer('');
-        setNewFalseAnswer('');
-      })
-      .catch((error) => {
-        console.error("Error submitting quiz:", error);
-        if (error.message === "Failed to fetch") {
-          dispatch(setMessage("Network error. Please check your internet connection."));
-        }
-      });
-  };
-    
+    dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
+  };  
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add a New Quiz</h2>
-      
-      {/* Added an id to the info message container */}
-      {infoMessage && <div id="infoMessage">{infoMessage}</div>}
+      <h2>Create New Quiz</h2>
       
       <div>
         <label htmlFor="newQuestion">Question: </label>
