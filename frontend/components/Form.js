@@ -60,16 +60,18 @@ export default function Form() {
     event.preventDefault();
     dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer))
       .then(() => {
-        dispatch(setMessage('Quiz successfully added!'));
         setNewQuestion('');
         setNewTrueAnswer('');
         setNewFalseAnswer('');
       })
-      .catch(() => {
-        dispatch(setMessage('Error submitting new quiz.'));
+      .catch((error) => {
+        console.error("Error submitting quiz:", error);
+        if (error.message === "Failed to fetch") {
+          dispatch(setMessage("Network error. Please check your internet connection."));
+        }
       });
   };
-  
+    
 
   return (
     <form onSubmit={handleSubmit}>
