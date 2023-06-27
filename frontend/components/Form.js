@@ -1,36 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { postQuiz } from '../state/action-creators';
 
 export default function Form() {
   const dispatch = useDispatch();
-  const formState = useSelector(state => state.form); // Listen for the form state in Redux
+  const formState = useSelector(state => state.form);
 
   const [newQuestion, setNewQuestion] = useState('');
   const [newTrueAnswer, setNewTrueAnswer] = useState('');
   const [newFalseAnswer, setNewFalseAnswer] = useState('');
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-
-  // Reset the form fields when the form state is reset in Redux
-  useEffect(() => {
-    if (formState.newQuestion === '' && formState.newTrueAnswer === '' && formState.newFalseAnswer === '') {
-      setNewQuestion('');
-      setNewTrueAnswer('');
-      setNewFalseAnswer('');
-    }
-  }, [formState]);
-
-  useEffect(() => {
-    const checkIfInputsAreValid = () => {
-      return (
-        newQuestion.trim().length > 1 &&
-        newTrueAnswer.trim().length > 1 &&
-        newFalseAnswer.trim().length > 1
-      );
-    };
-  
-    setIsButtonDisabled(!checkIfInputsAreValid());
-  }, [newQuestion, newTrueAnswer, newFalseAnswer]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -57,7 +35,7 @@ export default function Form() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Create New Quiz</h2>
-      
+
       <div>
         <label htmlFor="newQuestion">Question: </label>
         <input
@@ -68,7 +46,7 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-      
+
       <div>
         <label htmlFor="newTrueAnswer">True Answer: </label>
         <input
@@ -79,7 +57,7 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-      
+
       <div>
         <label htmlFor="newFalseAnswer">False Answer: </label>
         <input
@@ -90,10 +68,10 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-      
+
       <button
         type="submit"
-        disabled={isButtonDisabled}
+        disabled={newQuestion.trim().length <= 1 || newTrueAnswer.trim().length <= 1 || newFalseAnswer.trim().length <= 1}
         id="submitButton"
         data-testid="submitButton"
       >
