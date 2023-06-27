@@ -19,7 +19,7 @@ export default function Form() {
   
   const { newQuestion, newTrueAnswer, newFalseAnswer } = formState;
   
-  const isButtonDisabled = newQuestion.length <= 1 || newTrueAnswer.length <= 1 || newFalseAnswer.length <= 1;
+  const isButtonDisabled = newQuestion.trim().length < 2 || newTrueAnswer.trim().length < 2 || newFalseAnswer.trim().length < 2;
   
   return (
     <form onSubmit={handleSubmit}>
