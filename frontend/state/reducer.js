@@ -25,8 +25,6 @@ const initialFormState = {
   newQuestion: '',
   newTrueAnswer: '',
   newFalseAnswer: '',
-  infoMessage: '',
-  isValid: false,
 };
 
 // Reducer for wheel state
