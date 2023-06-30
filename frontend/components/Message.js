@@ -1,20 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-export default function Message() {
-  const infoMessage = useSelector(state => state.infoMessage);
-  const formMessage = useSelector(state => state.form.infoMessage);
+export default function Message(props) {
+  // Get the message from the Redux store
+  const message = useSelector(state => state.infoMessage);
 
-  let messageToShow = '';
-
-  if (infoMessage === 'correct') {
-    messageToShow = 'Nice job! That was the correct answer.';
-  } else if (infoMessage === 'incorrect') {
-    messageToShow = 'What a shame! That was the incorrect answer.';
-  } else if (formMessage) {
-    messageToShow = `Congrats: "${formMessage}" is a great question!`;
-  }
-
-  return <div id="message">{messageToShow}</div>;
+  // Display the message
+  return <div id="message">{message}</div>;
 }
+
 

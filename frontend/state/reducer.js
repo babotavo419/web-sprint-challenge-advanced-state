@@ -1,33 +1,15 @@
 import { combineReducers } from 'redux';
 import {
-  MOVE_CLOCKWISE,
-  MOVE_COUNTERCLOCKWISE,
   SET_QUIZ_INTO_STATE,
   SET_SELECTED_ANSWER,
   SET_INFO_MESSAGE,
-  SET_CORRECT_ANSWER_MESSAGE,
-  SET_INCORRECT_ANSWER_MESSAGE,
   INPUT_CHANGE,
   RESET_FORM,
-} from '../state/action-types';
+  MOVE_CLOCKWISE,
+  MOVE_COUNTERCLOCKWISE,
+} from './action-types';
 
-// Initial state values
 const initialWheelState = 0;
-const initialQuizState = {
-  quiz_id: '',
-  question: '',
-  answers: [],
-};
-
-const initialSelectedAnswerState = null;
-const initialMessageState = '';
-const initialFormState = {
-  newQuestion: '',
-  newTrueAnswer: '',
-  newFalseAnswer: '',
-};
-
-// Reducer for wheel state
 function wheel(state = initialWheelState, action) {
   switch (action.type) {
     case MOVE_CLOCKWISE:
@@ -39,56 +21,45 @@ function wheel(state = initialWheelState, action) {
   }
 }
 
-// Reducer for quiz state
+const initialQuizState = null;
 function quiz(state = initialQuizState, action) {
   switch (action.type) {
     case SET_QUIZ_INTO_STATE:
-      return {
-        ...state,
-        quiz_id: action.quiz.quiz_id,
-        question: action.quiz.question,
-        answers: action.quiz.answers,
-      };
+      return action.payload;
     default:
       return state;
   }
 }
 
-// Reducer for selected answer state
+const initialSelectedAnswerState = null;
 function selectedAnswer(state = initialSelectedAnswerState, action) {
   switch (action.type) {
     case SET_SELECTED_ANSWER:
-      return action.answerId;
+      return action.payload;
     default:
       return state;
- 
   }
-
 }
 
-// Reducer for info message state
+const initialMessageState = '';
 function infoMessage(state = initialMessageState, action) {
   switch (action.type) {
     case SET_INFO_MESSAGE:
-      return action.message;
-    case SET_CORRECT_ANSWER_MESSAGE:
-      return 'Nice job! That was the correct answer.';
-    case SET_INCORRECT_ANSWER_MESSAGE:
-      return 'What a shame! That was the incorrect answer.';
+      return action.payload;
     default:
       return state;
   }
 }
 
-// Reducer for form state
+const initialFormState = {
+  newQuestion: '',
+  newTrueAnswer: '',
+  newFalseAnswer: '',
+};
 function form(state = initialFormState, action) {
   switch (action.type) {
     case INPUT_CHANGE:
-      return {
-        ...state,
-        [action.fieldName]: action.value,
-        isValid: checkIfFormIsValid(action.fieldName, action.value), // Update the isValid field based on input changes
-      };
+      return { ...state, [action.payload.name]: action.payload.value };
     case RESET_FORM:
       return initialFormState;
     default:
@@ -96,27 +67,10 @@ function form(state = initialFormState, action) {
   }
 }
 
-// Add a helper function to check if the form inputs are valid
-function checkIfFormIsValid(fieldName, value) {
-  switch (fieldName) {
-    case 'newQuestion':
-    case 'newTrueAnswer':
-    case 'newFalseAnswer':
-      return value.trim().length > 1; // Check if the input value has more than one character after trimming whitespace
-    default:
-      return true; // Assume other fields are valid
-  }
-}
-
-
-// Combine all reducers
-const rootReducer = combineReducers({
+export default combineReducers({
   wheel,
   quiz,
   selectedAnswer,
   infoMessage,
   form,
 });
-
-export default rootReducer;
-
