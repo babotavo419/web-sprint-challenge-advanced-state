@@ -45,10 +45,12 @@ export default function Quiz(props) {
                 </div>
               ))}
             </div>
-            <button id="submitAnswerBtn" onClick={handleSubmitAnswer}>
+              <button id="submitAnswerBtn"
+              disabled={!selectedAnswer} 
+              onClick={handleSubmitAnswer}>
               Submit answer
-            </button>
-          </>
+              </button>
+            </>
         ) : 'Loading next quiz...'
       }
     </div>
