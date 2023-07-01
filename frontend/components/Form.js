@@ -1,27 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { postQuiz, inputChange } from '../state/action-creators';
+import { postQuiz } from '../state/action-creators';
 
 export default function Form() {
   const dispatch = useDispatch();
-  const formState = useSelector(state => state.form);
   const infoMessage = useSelector(state => state.infoMessage);
+
+  const [newQuestion, setNewQuestion] = useState("");
+  const [newTrueAnswer, setNewTrueAnswer] = useState("");
+  const [newFalseAnswer, setNewFalseAnswer] = useState("");
+
+  const isButtonDisabled = newQuestion.trim().length < 2 || newTrueAnswer.trim().length < 2 || newFalseAnswer.trim().length < 2;
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    dispatch(inputChange(name, value));
+
+    switch (name) {
+      case 'newQuestion':
+        setNewQuestion(value);
+        break;
+      case 'newTrueAnswer':
+        setNewTrueAnswer(value);
+        break;
+      case 'newFalseAnswer':
+        setNewFalseAnswer(value);
+        break;
+      default:
+        break;
+    }
   };
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const { newQuestion, newTrueAnswer, newFalseAnswer } = formState;
     dispatch(postQuiz(newQuestion, newTrueAnswer, newFalseAnswer));
+    setNewQuestion("");
+    setNewTrueAnswer("");
+    setNewFalseAnswer("");
   };
-  
-  const { newQuestion, newTrueAnswer, newFalseAnswer } = formState;
-  
-  const isButtonDisabled = newQuestion.trim().length < 2 || newTrueAnswer.trim().length < 2 || newFalseAnswer.trim().length < 2;
-  
+
   return (
     <form onSubmit={handleSubmit} data-testid="myForm">
       <h2>Create New Quiz</h2>
@@ -42,7 +58,7 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-  
+
       <div>
         <label htmlFor="newTrueAnswer">True Answer: </label>
         <input
@@ -53,7 +69,7 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-  
+
       <div>
         <label htmlFor="newFalseAnswer">False Answer: </label>
         <input
@@ -64,7 +80,7 @@ export default function Form() {
           onChange={handleInputChange}
         />
       </div>
-  
+
       <button
         type="submit"
         disabled={isButtonDisabled}
@@ -76,5 +92,6 @@ export default function Form() {
     </form>
   );
 }
+
 
 
