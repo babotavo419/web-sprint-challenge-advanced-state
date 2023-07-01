@@ -72,16 +72,11 @@ export default function Form() {
       <button
         type="submit"
         disabled={isButtonDisabled}
-        id="submitButton"           // id attribute
-        className="submit-button"  // class attribute
-        name="submitButton"        // name attribute
-        data-testid="submitButton" // data-testid attribute
-        data-custom="customValue"  // custom data attribute
-        aria-label="Submit Form"   // aria-label for accessibility
+        id="submitButton"
+        data-testid="submitButton"
       >
         Submit
       </button>
-
     </form>
   );
 }
