@@ -23,7 +23,7 @@ export default function Form() {
   const isButtonDisabled = newQuestion.trim().length < 2 || newTrueAnswer.trim().length < 2 || newFalseAnswer.trim().length < 2;
   
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} data-testid="myForm">
       <h2>Create New Quiz</h2>
       {
         infoMessage &&
