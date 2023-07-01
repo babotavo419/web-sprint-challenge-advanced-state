@@ -27,14 +27,8 @@ export default function Form() {
   );
 
   return (
-    <form onSubmit={handleSubmit} data-testid="myForm">
+    <form onSubmit={handleSubmit} id="form">
       <h2>Create New Quiz</h2>
-      {
-        infoMessage &&
-          <div className="info-message">
-            {infoMessage}
-          </div>
-      }
 
       <div>
         <label htmlFor="newQuestion">Question: </label>
@@ -70,12 +64,10 @@ export default function Form() {
       </div>
   
       <button
-        type="submit"
+        id="submitNewQuizBtn"
         disabled={isButtonDisabled}
-        id="submitButton"
-        data-testid="submitButton"
       >
-        Submit
+        Submit new quiz
       </button>
     </form>
   );
