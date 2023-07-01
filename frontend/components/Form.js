@@ -20,28 +20,12 @@ export default function Form() {
   
   const { newQuestion, newTrueAnswer, newFalseAnswer } = formState;
   
-  const customTrim = (str) => {
-    let start = 0;
-    let end = str.length;
-
-    while (str.charAt(start).match(/\s/)) {
-        start++;
-    }
-
-    while (str.charAt(end - 1).match(/\s/)) {
-        end--;
-    }
-
-    return str.substring(start, end);
-};
-
-const isButtonDisabled = (
-    customTrim(newQuestion).length <= 1 ||
-    customTrim(newTrueAnswer).length <= 1 ||
-    customTrim(newFalseAnswer).length <= 1
+  const isButtonDisabled = (
+    newQuestion.replace(/^\s+|\s+$/g, '').length < 2 ||
+    newTrueAnswer.replace(/^\s+|\s+$/g, '').length < 2 ||
+    newFalseAnswer.replace(/^\s+|\s+$/g, '').length < 2
 );
 
-  
   return (
     <form onSubmit={handleSubmit} data-testid="myForm">
       <h2>Create New Quiz</h2>
