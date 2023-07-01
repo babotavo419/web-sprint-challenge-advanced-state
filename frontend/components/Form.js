@@ -5,7 +5,8 @@ import { postQuiz, inputChange } from '../state/action-creators';
 export default function Form() {
   const dispatch = useDispatch();
   const formState = useSelector(state => state.form);
-  
+  const infoMessage = useSelector(state => state.infoMessage);
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     dispatch(inputChange(name, value));
@@ -24,7 +25,13 @@ export default function Form() {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Create New Quiz</h2>
-  
+      {
+        infoMessage &&
+          <div className="info-message">
+            {infoMessage}
+          </div>
+      }
+
       <div>
         <label htmlFor="newQuestion">Question: </label>
         <input

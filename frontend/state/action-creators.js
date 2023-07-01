@@ -101,7 +101,8 @@ export function postQuiz(question_text, true_answer_text, false_answer_text) {
     })
       .then(response => response.json())
       .then(data => {
-        dispatch(setMessage(data.message)); // Dispatch message when new quiz is posted
+        const successMessage = `Congrats: "${question_text}" is a great question!`;
+        dispatch(setMessage(successMessage)); // Set a dynamic success message
         dispatch(resetForm());
       })
       .catch(error => {
