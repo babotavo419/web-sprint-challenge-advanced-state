@@ -20,13 +20,27 @@ export default function Form() {
   
   const { newQuestion, newTrueAnswer, newFalseAnswer } = formState;
   
-  const trimWithSlice = (str) => str.slice(Math.max(0, str.match(/^\s*/)[0].length - 1), Math.max(0, str.match(/\s*$/).index + 1));
+  const customTrim = (str) => {
+    let start = 0;
+    let end = str.length;
 
-  const isButtonDisabled = (
-    trimWithSlice(newQuestion).length <= 1 ||
-    trimWithSlice(newTrueAnswer).length <= 1 ||
-    trimWithSlice(newFalseAnswer).length <= 1
-  );
+    while (str.charAt(start).match(/\s/)) {
+        start++;
+    }
+
+    while (str.charAt(end - 1).match(/\s/)) {
+        end--;
+    }
+
+    return str.substring(start, end);
+};
+
+const isButtonDisabled = (
+    customTrim(newQuestion).length <= 1 ||
+    customTrim(newTrueAnswer).length <= 1 ||
+    customTrim(newFalseAnswer).length <= 1
+);
+
   
   return (
     <form onSubmit={handleSubmit} data-testid="myForm">
