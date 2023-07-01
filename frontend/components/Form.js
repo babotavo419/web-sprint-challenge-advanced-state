@@ -24,7 +24,7 @@ export default function Form() {
     newQuestion.replace(/^\s+|\s+$/g, '').length < 2 ||
     newTrueAnswer.replace(/^\s+|\s+$/g, '').length < 2 ||
     newFalseAnswer.replace(/^\s+|\s+$/g, '').length < 2
-);
+  );
 
   return (
     <form onSubmit={handleSubmit} data-testid="myForm">
@@ -72,11 +72,16 @@ export default function Form() {
       <button
         type="submit"
         disabled={isButtonDisabled}
-        id="submitButton"
-        data-testid="submitButton"
+        id="submitButton"           // id attribute
+        className="submit-button"  // class attribute
+        name="submitButton"        // name attribute
+        data-testid="submitButton" // data-testid attribute
+        data-custom="customValue"  // custom data attribute
+        aria-label="Submit Form"   // aria-label for accessibility
       >
         Submit
       </button>
+
     </form>
   );
 }
